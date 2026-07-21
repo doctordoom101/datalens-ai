@@ -1,0 +1,23 @@
+Order ID,Order Date,Ship Mode,Customer ID,Customer Name,Segment,Country,City,State,Postal Code,Region,Category,Sub-Category,Product Name,Sales,Quantity,Discount,Profit
+CA-2023-152156,2023-11-08,Second Class,CG-12520,Claire Gute,Consumer,United States,Henderson,Kentucky,42420,South,Furniture,Bookcases,Bush Somerset Collection Bookcase,261.96,2,0.00,41.9136
+CA-2023-152156,2023-11-08,Second Class,CG-12520,Claire Gute,Consumer,United States,Henderson,Kentucky,42420,South,Furniture,Chairs,Hon Deluxe Fabric Upholstered Stacking Chairs,731.94,3,0.00,219.5820
+CA-2023-138688,2023-06-12,Second Class,DV-13045,Darrin Van Huff,Corporate,United States,Los Angeles,California,90036,West,Office Supplies,Labels,Self-Adhesive Address Labels,14.62,2,0.00,6.8714
+US-2023-108966,2023-10-11,Standard Class,SO-20335,Sean O'Donnell,Consumer,United States,Fort Lauderdale,Florida,,South,Furniture,Tables,Bretford CR4500 Series Conference Table,957.5775,5,0.45,-383.0310
+US-2023-108966,2023-10-11,Standard Class,SO-20335,Sean O'Donnell,Consumer,United States,Fort Lauderdale,Florida,,South,Office Supplies,Storage,Eldon Fold 'N Roll Cart,22.368,2,0.20,2.5164
+CA-2023-115812,2023-06-09,Standard Class,BH-11710,Brosina Hoffman,Consumer,United States,Los Angeles,California,90032,West,Furniture,Furnishings,Eldon Expressions Wood Dust Pack,48.86,7,0.00,14.1694
+CA-2023-115812,2023-06-09,Standard Class,BH-11710,Brosina Hoffman,Consumer,United States,Los Angeles,California,90032,West,Office Supplies,Art,Newer Technology Keypad,7.28,4,0.00,1.9656
+CA-2023-115812,2023-06-09,Standard Class,BH-11710,Brosina Hoffman,Consumer,United States,Los Angeles,California,90032,West,Technology,Phones,Mitel 5320 IP Phone,907.152,6,0.20,90.7152
+CA-2023-115812,2023-06-09,Standard Class,BH-11710,Brosina Hoffman,Consumer,United States,Los Angeles,California,,West,Office Supplies,Binders,DXL Angle-View Binders with Locking Rings,18.504,3,0.20,5.7825
+CA-2023-115812,2023-06-09,Standard Class,BH-11710,Brosina Hoffman,Consumer,United States,Los Angeles,California,90032,West,Office Supplies,Appliances,Belkin 3-Outlet Surge Protector,114.90,5,0.00,34.4700
+CA-2023-115812,2023-06-09,Standard Class,BH-11710,Brosina Hoffman,Consumer,United States,Los Angeles,California,90032,West,Furniture,Tables,Chromcraft Rectangular Conference Tables,1706.184,9,0.20,85.3092
+CA-2023-115812,2023-06-09,Standard Class,BH-11710,Brosina Hoffman,Consumer,United States,Los Angeles,California,90032,West,Technology,Phones,Konftel 250 Conference Phone,911.424,4,0.20,68.3568
+CA-2023-114440,2023-04-15,Standard Class,AA-10250,Arianne Aaron,Consumer,United States,Concord,North Carolina,28027,South,Office Supplies,Paper,Xerox 1967 Paper,15.552,3,0.20,5.4432
+CA-2023-161389,2023-12-05,Standard Class,IM-15070,Irene Maddox,Consumer,United States,Seattle,Washington,98103,West,Office Supplies,Binders,Fellowes PB200 Plastic Comb Binding Machine,407.976,3,0.20,132.5922
+US-2023-118983,2023-11-22,Standard Class,HP-14815,Harold Pawlan,Home Office,United States,Fort Worth,Texas,76106,Central,Office Supplies,Appliances,Holmes Replacement Filter,68.81,5,0.80,-123.8580
+US-2023-118983,2023-11-22,Standard Class,HP-14815,Harold Pawlan,Home Office,United States,Fort Worth,Texas,76106,Central,Office Supplies,Binders,Storex Recycled Plastic Storage Boxes,2.544,2,0.80,-3.8160
+CA-2023-105893,2023-11-11,Standard Class,PK-19075,Pete Kriz,Consumer,United States,Madison,Wisconsin,53711,Central,Office Supplies,Storage,Staples Storage Trays,665.88,6,0.00,13.3176
+CA-2023-167168,2023-05-13,Second Class,AG-10270,Alejandro Grove,Consumer,United States,West Jordan,Utah,84084,West,Office Supplies,Storage,Fellowes Super Stacker Storage Boxes,55.50,2,0.00,9.9900
+CA-2023-143336,2023-08-27,Second Class,ZD-21925,Zuschuss Donatek,Consumer,United States,San Francisco,California,94109,West,Office Supplies,Art,Newer Technology Colored Pencils,8.56,2,0.00,2.4824
+CA-2023-143336,2023-08-27,Second Class,ZD-21925,Zuschuss Donatek,Consumer,United States,San Francisco,California,94109,West,Office Supplies,Art,Newer Technology Colored Pencils,8.56,2,0.00,2.4824
+CA-2023-101343,2023-07-17,Standard Class,RA-19885,Ruben Ausman,Corporate,United States,Los Angeles,California,,West,Office Supplies,Paper,Xerox 1980 High Speed Paper,211.96,4,0.00,101.7408
+CA-2023-101343,2023-07-17,Standard Class,RA-19885,Ruben Ausman,Corporate,United States,Los Angeles,California,90049,West,Technology,Accessories,Logitech Wireless Headset H800,259.96,2,0.00,70.1892
