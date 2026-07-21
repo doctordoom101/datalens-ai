@@ -10,8 +10,9 @@ ENV/
 env.bak/
 venv.bak/
 
-# Environment Variables
+# Environment Variables & Project Brief
 .env
+PROJECT_OVERVIEW.md
 
 # Database / Vector Store Cache
 .chroma/
