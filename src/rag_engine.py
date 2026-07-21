@@ -3,33 +3,50 @@ from typing import List, Dict, Any, Tuple
 from langchain_core.documents import Document
 from langchain_community.vectorstores import Chroma
 from langchain_openai import OpenAIEmbeddings, ChatOpenAI
+from langchain_google_genai import GoogleGenerativeAIEmbeddings, ChatGoogleGenerativeAI
 from langchain_core.prompts import PromptTemplate
 from langchain_core.output_parsers import StrOutputParser
 
 class RAGEngine:
     """
-    RAG Engine for DataLens AI using LangChain, OpenAI, and ChromaDB.
+    RAG Engine for DataLens AI using LangChain, OpenAI/Gemini, and ChromaDB.
     Handles vector indexing, context retrieval, and structured QA generation with source citations.
     """
 
-    def __init__(self, api_key: str, model_name: str = "gpt-3.5-turbo"):
+    def __init__(self, api_key: str, provider: str = "openai", model_name: str = None):
         self.api_key = api_key
-        self.model_name = model_name
+        self.provider = provider.lower()
         self.vector_store = None
         self.retriever = None
 
         if not api_key:
-            raise ValueError("OpenAI API Key is required to initialize RAG Engine.")
+            raise ValueError(f"{provider.upper()} API Key is required to initialize RAG Engine.")
 
-        # Set environment variable for LangChain / OpenAI
-        os.environ["OPENAI_API_KEY"] = api_key
-
-        self.embeddings = OpenAIEmbeddings(openai_api_key=api_key)
-        self.llm = ChatOpenAI(
-            model_name=self.model_name,
-            temperature=0.1,
-            openai_api_key=api_key
-        )
+        if self.provider == "openai":
+            # Set environment variable for LangChain / OpenAI
+            os.environ["OPENAI_API_KEY"] = api_key
+            self.model_name = model_name or "gpt-3.5-turbo"
+            self.embeddings = OpenAIEmbeddings(openai_api_key=api_key)
+            self.llm = ChatOpenAI(
+                model_name=self.model_name,
+                temperature=0.1,
+                openai_api_key=api_key
+            )
+        elif self.provider == "gemini":
+            # Set environment variable for Gemini
+            os.environ["GOOGLE_API_KEY"] = api_key
+            self.model_name = model_name or "gemini-flash-latest"
+            self.embeddings = GoogleGenerativeAIEmbeddings(
+                model="models/gemini-embedding-001",
+                google_api_key=api_key
+            )
+            self.llm = ChatGoogleGenerativeAI(
+                model=self.model_name,
+                temperature=0.1,
+                google_api_key=api_key
+            )
+        else:
+            raise ValueError(f"Unsupported provider: {self.provider}")
 
     def index_documents(self, documents: List[Document]) -> int:
         """Indexes dataset knowledge documents into an in-memory Chroma vector database."""
@@ -63,7 +80,7 @@ class RAGEngine:
             }
 
         # 1. Retrieve relevant contexts
-        retrieved_docs = self.retriever.get_relevant_documents(question)
+        retrieved_docs = self.retriever.invoke(question)
 
         # 2. Format context string and extract sources
         context_parts = []

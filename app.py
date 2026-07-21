@@ -37,7 +37,7 @@ if "suggested_question" not in st.session_state:
     st.session_state.suggested_question = ""
 
 
-def process_dataset(df: pd.DataFrame, name: str, api_key: str):
+def process_dataset(df: pd.DataFrame, name: str, api_key: str, provider: str, model_name: str):
     """Processes uploaded dataframe: profiles data, builds knowledge base, and indexes into ChromaDB."""
     with st.spinner("⚡ Profiling dataset & indexing metadata into RAG Vector Store..."):
         st.session_state.df = df
@@ -55,7 +55,7 @@ def process_dataset(df: pd.DataFrame, name: str, api_key: str):
         # 3. RAG Vector DB Indexing
         if api_key:
             try:
-                engine = RAGEngine(api_key=api_key)
+                engine = RAGEngine(api_key=api_key, provider=provider, model_name=model_name)
                 indexed_count = engine.index_documents(documents)
                 st.session_state.rag_engine = engine
                 st.sidebar.success(f"✅ Indexed {indexed_count} metadata chunks into RAG Vector Store!")
@@ -64,21 +64,41 @@ def process_dataset(df: pd.DataFrame, name: str, api_key: str):
                 st.sidebar.error(f"⚠️ Vector DB Indexing Warning: {str(e)}")
         else:
             st.session_state.rag_engine = None
-            st.sidebar.warning("⚠️ OpenAI API Key missing. RAG chat will require API key.")
+            st.sidebar.warning(f"⚠️ {provider} API Key missing. RAG chat will require API key.")
 
 
 # Sidebar Section
 st.sidebar.image("https://img.icons8.com/isometric-folders/100/data-configuration.png", width=64)
 st.sidebar.title("DataLens AI")
 
-# API Key Input
-env_key = os.getenv("OPENAI_API_KEY", "")
-openai_api_key = st.sidebar.text_input(
-    "🔑 OpenAI API Key",
-    value=env_key,
-    type="password",
-    help="Enter your OpenAI API key to enable RAG Chatbot features."
+# LLM Provider settings
+st.sidebar.subheader("⚙️ LLM Provider Settings")
+provider = st.sidebar.selectbox(
+    "Select LLM Provider",
+    options=["Gemini", "OpenAI"],
+    index=0,
+    help="Choose the AI provider. Gemini is free and recommended."
 )
+
+if provider == "Gemini":
+    env_key = os.getenv("GOOGLE_API_KEY", "")
+    api_key = st.sidebar.text_input(
+        "🔑 Gemini API Key",
+        value=env_key,
+        type="password",
+        help="Enter your Google Gemini API key. Get one for free at Google AI Studio."
+    )
+    st.sidebar.markdown("[🔗 Dapatkan Gemini API Key Gratis](https://aistudio.google.com/)", unsafe_allow_html=True)
+    selected_model = "gemini-flash-latest"
+else:
+    env_key = os.getenv("OPENAI_API_KEY", "")
+    api_key = st.sidebar.text_input(
+        "🔑 OpenAI API Key",
+        value=env_key,
+        type="password",
+        help="Enter your OpenAI API key to enable RAG Chatbot features."
+    )
+    selected_model = "gpt-3.5-turbo"
 
 st.sidebar.markdown("---")
 st.sidebar.subheader("📁 Upload Dataset")
@@ -96,14 +116,14 @@ if sample_button:
     sample_path = os.path.join(os.path.dirname(__file__), "sample_data", "global_superstore_sample.csv")
     if os.path.exists(sample_path):
         sample_df = pd.read_csv(sample_path)
-        process_dataset(sample_df, "Global Superstore Sample.csv", openai_api_key)
+        process_dataset(sample_df, "Global Superstore Sample.csv", api_key, provider, selected_model)
     else:
         st.sidebar.error("Sample dataset file not found.")
 
 elif uploaded_file is not None:
     if st.session_state.dataset_name != uploaded_file.name:
         df = pd.read_csv(uploaded_file)
-        process_dataset(df, uploaded_file.name, openai_api_key)
+        process_dataset(df, uploaded_file.name, api_key, provider, selected_model)
 
 # Main Application Content
 render_header()
@@ -205,10 +225,10 @@ else:
 
     # ==================== TAB 2: AI DATA CHAT ====================
     with tab2:
-        st.caption(f"Connected dataset: **{st.session_state.dataset_name}** | RAG Engine: **{'Active ✅' if st.session_state.rag_engine else 'Inactive ❌ (API Key required)'}**")
+        st.caption(f"Connected dataset: **{st.session_state.dataset_name}** | RAG Engine: **{'Active ✅' if st.session_state.rag_engine else f'Inactive ❌ ({provider} API Key required)'}**")
 
-        if not openai_api_key:
-            st.warning("⚠️ Please provide an **OpenAI API Key** in the sidebar to ask questions to the RAG model.")
+        if not api_key:
+            st.warning(f"⚠️ Please provide a **{provider} API Key** in the sidebar to ask questions to the RAG model.")
 
         st.subheader("💡 Prompt Suggestions")
         st.write("Click any suggestion to prefill your query:")
@@ -255,14 +275,14 @@ else:
             # Generate AI answer
             with st.chat_message("assistant"):
                 if not st.session_state.rag_engine:
-                    if not openai_api_key:
-                        resp_text = "DataLens AI error: OpenAI API Key is missing. Please enter your API key in the sidebar."
+                    if not api_key:
+                        resp_text = f"DataLens AI error: {provider} API Key is missing. Please enter your API key in the sidebar."
                     else:
                         # Re-try initializing engine if key present now
                         try:
                             kb_gen = KnowledgeBaseGenerator(st.session_state.profile)
                             docs = kb_gen.generate_documents()
-                            st.session_state.rag_engine = RAGEngine(openai_api_key)
+                            st.session_state.rag_engine = RAGEngine(api_key=api_key, provider=provider, model_name=selected_model)
                             st.session_state.rag_engine.index_documents(docs)
                             res = st.session_state.rag_engine.query(user_query)
                             resp_text = res["answer"]
@@ -271,10 +291,24 @@ else:
                             resp_text = f"Error querying RAG engine: {str(err)}"
                             sources = []
                 else:
-                    with st.spinner("🧠 Retrieving dataset context & generating RAG response..."):
-                        res = st.session_state.rag_engine.query(user_query)
-                        resp_text = res["answer"]
-                        sources = res["sources"]
+                    # If the engine was initialized with a different provider or key, let's reinitialize it to match current settings
+                    if st.session_state.rag_engine.provider != provider.lower() or st.session_state.rag_engine.api_key != api_key:
+                        try:
+                            kb_gen = KnowledgeBaseGenerator(st.session_state.profile)
+                            docs = kb_gen.generate_documents()
+                            st.session_state.rag_engine = RAGEngine(api_key=api_key, provider=provider, model_name=selected_model)
+                            st.session_state.rag_engine.index_documents(docs)
+                        except Exception as err:
+                            st.session_state.rag_engine = None
+                    
+                    if st.session_state.rag_engine:
+                        with st.spinner("🧠 Retrieving dataset context & generating RAG response..."):
+                            res = st.session_state.rag_engine.query(user_query)
+                            resp_text = res["answer"]
+                            sources = res["sources"]
+                    else:
+                        resp_text = f"Error re-initializing RAG engine with {provider}."
+                        sources = []
 
                 st.write(resp_text)
                 if 'sources' in locals() and sources:

@@ -7,3 +7,4 @@ langchain-openai>=0.0.2
 chromadb>=0.4.22
 python-dotenv>=1.0.0
 tiktoken>=0.5.2
+langchain-google-genai>=1.0.0
